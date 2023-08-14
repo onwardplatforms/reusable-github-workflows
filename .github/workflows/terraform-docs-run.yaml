@@ -1,0 +1,47 @@
+name: document
+on:
+  workflow_call:
+  push:
+      branches:
+          - '**'
+      paths-ignore:
+          - 'README.md'
+jobs:
+  readme:
+    runs-on: ubuntu-latest
+    container:
+      image: quay.io/terraform-docs/terraform-docs:0.16.0
+    steps:
+      - name: Install pre-requisites
+        run: apk update && apk add git git-lfs
+
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Checkout CI repository
+        uses: actions/checkout@v3
+        with:
+          repository: 'onwardplatforms/terraform-ci'
+          ref: 'main'
+          path: '.github/terraform-ci'
+
+      - name: Create Terraform Docs
+        run: |
+            terraform-docs . --config .github/terraform-ci/terraform-docs.yaml
+            # Need to add safe directory otherwise not recognized as a git repository
+            git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      - name: Commit and push changes
+        run: |
+            git config --global user.email "actions@github.com"
+            git config --global user.name "GitHub Actions"
+            git add README.md
+            git commit -m "Update README with new Terraform docs" || exit 0
+            git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+            if [ "${{ github.event_name }}" = "pull_request" ]; then
+              git push origin HEAD:${{ github.head_ref }}
+            else
+              git push origin HEAD:${{ github.ref }}
+            fi
