@@ -41,7 +41,9 @@ jobs:
           fi
 
       - name: Show version
-        run: tflint --version
+        run: |
+          tflint --version
+          ls
 
       - name: Init TFLint
         run: tflint --init --config $GITHUB_WORKSPACE/.github/reusable-github-workflows/tflint.hcl
