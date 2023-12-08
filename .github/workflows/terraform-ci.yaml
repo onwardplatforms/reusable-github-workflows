@@ -8,10 +8,10 @@ jobs:
     uses: ./.github/workflows/terraform-validate.yaml
 
   lint:
-    uses: ./.github/workflows/tflint-run.yaml
+    uses: ./.github/workflows/terraform-tflint-run.yaml
 
   security-scan:
-    uses: ./.github/workflows/tfsec-run.yaml
+    uses: ./.github/workflows/terraform-tfsec-run.yaml
 
   terraform-plan:
     needs: [lint, validate, security-scan]
