@@ -9,7 +9,7 @@ config {
   force = false
   disabled_by_default = false
 
-  varfile = ["terraform.tfvars.ci"]
+  varfile = ["terraform.tfvars"]
 }
 
 rule "terraform_deprecated_interpolation" {
