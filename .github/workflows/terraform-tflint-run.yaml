@@ -40,9 +40,6 @@ jobs:
           EOF
           fi
 
-      - name: Switch to the examples directory
-        run: cd examples
-
       - name: Show version
         run: |
           tflint --version
@@ -52,4 +49,11 @@ jobs:
 
       - name: TFLint
         run: |
-          for d in . $(find . -maxdepth 2 -path './modules/*' -type d -print); do cd $d && echo "current dir $PWD" && terraform init && TFLINT_LOG=debug tflint --config $GITHUB_WORKSPACE/.github/reusable-github-workflows/tflint.hcl || exit $?; cd -; done
+          cd examples
+          for d in . $(find . -maxdepth 2 -type d -print); do
+            cd $d
+            echo "current dir $PWD"
+            terraform init
+            TFLINT_LOG=debug tflint --config $GITHUB_WORKSPACE/.github/reusable-github-workflows/tflint.hcl || exit $?
+            cd -
+          done
