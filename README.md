@@ -18,7 +18,7 @@ name: CI
 on: [push]
 jobs:
   ci:
-    uses: onwardplatforms/terraform-ci/.github/workflows/terraform-ci.yaml@main
+    uses: onwardplatforms/reusable-github-workflows/.github/workflows/terraform-ci.yaml@main
 ...
 ```
 

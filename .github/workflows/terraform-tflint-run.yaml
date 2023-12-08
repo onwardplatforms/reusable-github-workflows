@@ -15,9 +15,9 @@ jobs:
       - name: Checkout CI repository
         uses: actions/checkout@v3
         with:
-            repository: 'onwardplatforms/terraform-ci'
+            repository: 'onwardplatforms/reusable-github-workflows'
             ref: 'main'
-            path: '.github/terraform-ci'
+            path: '.github/reusable-github-workflows'
 
       - name: Setup TFLint
         uses: terraform-linters/setup-tflint@v2
@@ -28,7 +28,7 @@ jobs:
         run: |
           apk update && apk add git jq curl
           export TFLINT_AZURERM_PLUGIN_VERSION=$(curl -s --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' --header 'content-type: application/json' "https://api.github.com/repos/terraform-linters/tflint-ruleset-azurerm/tags" | jq -r '.[0].name' | sed 's/v//')
-          sed -i "s/TFLINT_AZURERM_PLUGIN_VERSION/$TFLINT_AZURERM_PLUGIN_VERSION/g" $GITHUB_WORKSPACE/.github/terraform-ci/tflint.hcl
+          sed -i "s/TFLINT_AZURERM_PLUGIN_VERSION/$TFLINT_AZURERM_PLUGIN_VERSION/g" $GITHUB_WORKSPACE/.github/reusable-github-workflows/tflint.hcl
 
       - name: Prepare CI files
         run: |
@@ -44,8 +44,8 @@ jobs:
         run: tflint --version
 
       - name: Init TFLint
-        run: tflint --init --config $GITHUB_WORKSPACE/.github/terraform-ci/tflint.hcl
+        run: tflint --init --config $GITHUB_WORKSPACE/.github/reusable-github-workflows/tflint.hcl
 
       - name: TFLint
         run: |
-          for d in . $(find . -maxdepth 2 -path './modules/*' -type d -print); do cd $d && echo "current dir $PWD" && terraform init && TFLINT_LOG=debug tflint --config $GITHUB_WORKSPACE/.github/terraform-ci/tflint.hcl || exit $?; cd -; done
+          for d in . $(find . -maxdepth 2 -path './modules/*' -type d -print); do cd $d && echo "current dir $PWD" && terraform init && TFLINT_LOG=debug tflint --config $GITHUB_WORKSPACE/.github/reusable-github-workflows/tflint.hcl || exit $?; cd -; done

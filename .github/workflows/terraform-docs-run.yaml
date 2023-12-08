@@ -23,13 +23,13 @@ jobs:
       - name: Checkout CI repository
         uses: actions/checkout@v3
         with:
-          repository: 'onwardplatforms/terraform-ci'
+          repository: 'onwardplatforms/reusable-github-workflows'
           ref: 'main'
-          path: '.github/terraform-ci'
+          path: '.github/reusable-github-workflows'
 
       - name: Create Terraform Docs
         run: |
-            terraform-docs . --config .github/terraform-ci/terraform-docs.yaml
+            terraform-docs . --config .github/reusable-github-workflows/terraform-docs.yaml
             # Need to add safe directory otherwise not recognized as a git repository
             git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
