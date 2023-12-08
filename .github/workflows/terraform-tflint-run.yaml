@@ -40,10 +40,12 @@ jobs:
           EOF
           fi
 
+      - name: Switch to the examples directory
+        run: cd examples
+
       - name: Show version
         run: |
           tflint --version
-          ls
 
       - name: Init TFLint
         run: tflint --init --config $GITHUB_WORKSPACE/.github/reusable-github-workflows/tflint.hcl
